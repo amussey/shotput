@@ -46,6 +46,8 @@ class Uploader(LoggingEventHandler):
 
     def put(self, filename):
         hostname = self.config.hostname
+        print(self.config.__dict__)
+
         try:
             t = paramiko.Transport((hostname, 22))
             t.connect(
@@ -54,9 +56,18 @@ class Uploader(LoggingEventHandler):
                 password=self.config.password,
             )
             sftp = paramiko.SFTPClient.from_transport(t)
+        except Exception as e:
+            print('Problem connecting: ', e)
+            return None
 
+        try:
             # dirlist on remote host
             dirlist = sftp.listdir(self.config.server_path)
+        except Exception as e:
+            print('Path {} not found on the server.  (error: {})'.format(self.config.server_path, e))
+            return None
+
+        try:
             print("Dirlist: %s" % dirlist)
 
             new_filename = '{}.png'.format(random_alphanum_str(6))
@@ -69,17 +80,18 @@ class Uploader(LoggingEventHandler):
         except Exception as e:
             print(e)
 
-        print(new_filename)
-
         return new_filename
 
     def do_push(self, filename):
         filename = self.put(filename)
 
-        url = '{}{}'.format(self.config.web_url, filename)
-        pyperclip.copy(url)
+        if filename is not None:
+            url = '{}{}'.format(self.config.web_url, filename)
+            pyperclip.copy(url)
 
-        pync.notify('Screenshot Uploader', title=url)
+            pync.notify(url, title='Shotput')
+        else:
+            pync.notify(title='Upload failed.')
 
     def on_moved(self, event):
         super(Uploader, self).on_moved(event)
@@ -89,6 +101,7 @@ class Uploader(LoggingEventHandler):
                      event.dest_path)
 
         if what == 'file' and event.dest_path[-4:] == '.png':
+            print(event.dest_path)
             self.do_push(event.dest_path)
 
     def on_created(self, event):
@@ -98,4 +111,5 @@ class Uploader(LoggingEventHandler):
         logging.info("Created %s: %s", what, event.src_path)
 
         if what == 'file' and event.src_path[-4:] == '.png':
+            print(event.src_path)
             self.do_push(event.src_path)

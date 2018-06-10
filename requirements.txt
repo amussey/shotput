@@ -14,8 +14,11 @@ pycparser==2.18
 pyflakes==1.6.0
 PyNaCl==1.2.1
 pync==2.0.3
+pyobjc-core==4.2.2
+pyobjc-framework-Cocoa==4.2.2
 pyperclip==1.6.2
 python-dateutil==2.7.3
 PyYAML==3.12
+-e git+https://github.com/justin-pierce/rumps#egg=rumps
 six==1.11.0
 watchdog==0.8.3

@@ -11,7 +11,7 @@ from .uploader import Uploader
 rumps.debug_mode(True)
 
 
-class Shotput(rumps.App):
+class ShotputApp(rumps.App):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,7 +23,8 @@ class Shotput(rumps.App):
 
         self.config = Config()
         self.uploader = Uploader(self.config)
-        # self.start_watching()
+
+        self.start_watching()
 
     @rumps.clicked("Reload/Verify Preferences")
     def prefs_reload(self, sender):
@@ -35,15 +36,17 @@ class Shotput(rumps.App):
                 warning_str += '"{}" is {}.\n'.format(item, warning)
             rumps.alert(title='Warning!', message=warning_str)
 
+        self.stop_watching()
+        self.start_watching()
+
     @rumps.clicked("Edit Preferences")
     def prefs_open(self, sender=None):
         # rumps.alert("jk! no preferences available!")
         self.config.open()
 
-    @rumps.clicked("Silly button")
-    def onoff(self, sender):
-        print(sender.state)
-        sender.state = not sender.state
+    # @rumps.clicked("Enable Uploading")
+    # def onoff(self, sender):
+    #     sender.state = not sender.state
 
     @rumps.clicked("Exit Shotput")
     def exit(self, _):

@@ -9,7 +9,7 @@ DEFAULT_CONFIG = OrderedDict(
     password="your_sftp_password",
     hostname="yoursite.com",
     port="22",
-    server_path="'/where/on/the/server/to/store/things'",
+    server_path="/where/on/the/server/to/store/things",
     web_url="http://website.to/prepend",
 )
 
@@ -73,4 +73,3 @@ class Config(object):
             self.watch_dir = os.path.expanduser("~/Desktop")
 
         self.watch_dir = self.watch_dir.strip()
-

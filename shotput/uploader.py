@@ -2,9 +2,9 @@ from watchdog.events import LoggingEventHandler
 import logging
 import os
 import paramiko
-import pync
 import pyperclip
 import random
+import rumps
 import string
 
 
@@ -89,9 +89,9 @@ class Uploader(LoggingEventHandler):
             url = '{}{}'.format(self.config.web_url, filename)
             pyperclip.copy(url)
 
-            pync.notify(url, title='Shotput')
+            rumps.notification(title='Shotput', subtitle=url, message='', sound=False)
         else:
-            pync.notify(title='Upload failed.')
+            rumps.notification(title='Upload failed.', subtitle='', message='', sound=True)
 
     def on_moved(self, event):
         super(Uploader, self).on_moved(event)
